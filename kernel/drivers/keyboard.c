@@ -10,9 +10,16 @@
 #define SC_ENTER 0x1C
 #define SC_LCTRL 0x1D
 
+#define KEYBOARD_BUF_LEN 128
+
 //TODO: Do special keys like F1-12
 //      Do numpad
 //      
+
+char kb_buf[128];
+unsigned int kb_buf_index = 0;
+
+bool accepting_input = false;
 
 bool caps_lock = false;
 bool extended_key = false;
@@ -63,6 +70,8 @@ void handle_key_action(unsigned char scancode){
     }
     pressed_keys[(int) scancode] = true;
 
+    if(!accepting_input) return;
+
     switch (scancode){
         case SC_LSHIFT:
             break;
@@ -74,7 +83,9 @@ void handle_key_action(unsigned char scancode){
             break;
         case SC_ENTER:
             // The action that this key performs really depends on what is going on
-            kprint("\n");
+            // kprint("\n");
+            kb_buf[kb_buf_index] = '\0';
+            accepting_input = false;
             break;
         case SC_LCTRL:
             break;
@@ -85,12 +96,22 @@ void handle_key_action(unsigned char scancode){
                 if(index > sizeof(shifted_keys) / sizeof(char)) break;
 
                 kprint_char(shifted_keys[index]);
+
+                if(kb_buf_index < KEYBOARD_BUF_LEN - 1) { //Minus one for the trailing \0
+                    kb_buf[kb_buf_index] = shifted_keys[index];
+                    kb_buf_index++;
+                }
             } else {
                 size_t index = (size_t) scancode;
 
                 if(index > sizeof(keys) / sizeof(char)) break;
 
                 kprint_char(keys[index]);
+
+                if(kb_buf_index < KEYBOARD_BUF_LEN - 1) { //Minus one for the trailing \0
+                    kb_buf[kb_buf_index] = keys[index];
+                    kb_buf_index++;
+                }
             }
     }
 }
@@ -121,4 +142,15 @@ void keyboard_handler(registers_t r){
         return;
     }
     handle_key_action(scancode);
+}
+
+char* get_string() {
+    accepting_input = true;
+
+    while(accepting_input) {
+        ;
+    }
+
+    kb_buf_index = 0;
+    return kb_buf;
 }

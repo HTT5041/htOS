@@ -12,6 +12,9 @@
 #include <keyboard.h>
 #include <timer.h>
 
+#include <string.h>
+#include <abort.h>
+
 #include <logging.h>
 
 void kernel_main() {
@@ -53,7 +56,12 @@ void kernel_main() {
     register_handler(IRQ1, keyboard_handler);
     register_handler(IRQ0, timer_callback);
 
-    while (1){
-        asm volatile("hlt");
+    kprint("$ ");
+    char* input_buf = get_string();
+    
+    if(streq(input_buf, "ping")){
+        kprint("\npong!");
     }
+
+    abort();
 }

@@ -8,9 +8,21 @@ size_t strlen(const char* str){
     return size;
 }
 
-void memcpy(char* src, char* dst, size_t size){
-    for(size_t i = 0; i < size; i++){
-        dst[i] = src[i];
+void memcpy(void* src, void* dst, size_t size){
+    uint32_t *d = (uint32_t*) dst;
+    const uint32_t *s = (const uint32_t*) src;
+
+    // Copy 4 bytes (1 word) at a time if possible
+    while (size >= 4) {
+        *d++ = *s++;
+        size -= 4;
+    }
+
+    // Copy remaining bytes if n is not divisible by 4
+    uint8_t *d_byte = (uint8_t*) d;
+    const uint8_t *s_byte = (const uint8_t*) s;
+    while (size--) {
+        *d_byte++ = *s_byte++;
     }
 }
 

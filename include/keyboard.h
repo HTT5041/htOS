@@ -4,5 +4,6 @@
 #include <isr.h>
 
 void keyboard_handler(registers_t r);
+char* get_string();
 
 #endif

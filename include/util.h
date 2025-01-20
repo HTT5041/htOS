@@ -7,7 +7,7 @@
 
 size_t strlen(const char* str);
 
-void memcpy(char* src, char* dst, size_t size);
+void memcpy(void* src, void* dst, size_t size);
 
 void uint64_to_hex(uint64_t num, char buffer[17]);
 void uint32_to_hex(uint32_t num, char buffer[9]);

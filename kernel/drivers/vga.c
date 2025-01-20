@@ -43,8 +43,8 @@ char get_char_at(int x, int y){
 
 void do_scroll(){
     // First, shift the lines up by one
-    memcpy((char*) VGA_MEMORY + (VGA_MAX_WIDTH * 2),              // SRC (Beginning of the 2nd row)
-           (char*) VGA_MEMORY,                                    // DST (Beginning of the 1st row)                 
+    memcpy((uint8_t*) VGA_MEMORY + (VGA_MAX_WIDTH * 2),              // SRC (Beginning of the 2nd row)
+           (uint8_t*) VGA_MEMORY,                                    // DST (Beginning of the 1st row)                 
            (VGA_MAX_HEIGHT * VGA_MAX_WIDTH - VGA_MAX_WIDTH) * 2); // Size 
 
     // Now delete the last line
