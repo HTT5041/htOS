@@ -9,12 +9,9 @@
 #include <vga.h>
 #include <ports.h>
 #include <util.h>
+#include <keyboard.h>
 
 #include <logging.h>
-
-void keyboard_handler(registers_t regs) {
-    char scancode = b_in(0x60);
-}
 
 void kernel_main() {
     init_terminal();
@@ -32,7 +29,8 @@ void kernel_main() {
     enable_interrupts();
     log_message(SUCCESS, "interrupts enabled", true);
 
-    terminal_set_colour(GREEN, BLACK);
+    terminal_set_colour(RED, BLACK);
+    
     
     kprint("                     __          __       ______    ______  \n");
     kprint("                    /  |        /  |     /      \\  /      \\ \n");
@@ -43,12 +41,11 @@ void kernel_main() {
     kprint("                    $$ |  $$ |  $$ |/  |$$ \\__$$ |/  \\__$$ |\n");
     kprint("                    $$ |  $$ |  $$  $$/ $$    $$/ $$    $$/ \n");
     kprint("                    $$/   $$/    $$$$/   $$$$$$/   $$$$$$/  \n\n\n");
+    
 
     terminal_default_colour();
 
-    kprint("Hello World!");
-
-    //register_handler(IRQ1, keyboard_handler);
+    register_handler(IRQ1, keyboard_handler);
 
     while (1){
         asm volatile("hlt");

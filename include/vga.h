@@ -26,8 +26,10 @@ enum vga_colour {
 
 void init_terminal();
 void kprint(const char* str);
+void kprint_char(const char c);
 void terminal_set_colour(enum vga_colour foreground, enum vga_colour background);
 void terminal_default_colour();
 void terminal_clear();
+void terminal_backspace(bool goto_eol);
 
 #endif

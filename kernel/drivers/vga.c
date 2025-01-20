@@ -37,6 +37,10 @@ void terminal_put_char_at(int x, int y, char c) {
     set_cursor(x, y);
 }
 
+char get_char_at(int x, int y){
+    return (VGA_MEMORY[get_xy_index(x, y)] & 0x00FF);
+}
+
 void do_scroll(){
     // First, shift the lines up by one
     memcpy((char*) VGA_MEMORY + (VGA_MAX_WIDTH * 2),              // SRC (Beginning of the 2nd row)
@@ -58,6 +62,7 @@ void terminal_write_char(char c){
             do_scroll();
         }
 
+        set_cursor(current_x-1, current_y);
         return;
     }
 
@@ -116,4 +121,35 @@ void terminal_clear() {
     current_x = 0;
     current_y = 0;
     set_cursor(-1, 0);
+}
+
+void terminal_backspace(bool goto_eol){
+
+    if (current_x == 0 && current_y == 0){
+        // Nothing to backspace
+        return;
+    } else if (current_x == 0){
+        current_y -= 1;
+        current_x = VGA_MAX_WIDTH;
+        if (goto_eol){
+            // Back track until a non ' ' character is found
+            while(current_x > 0){
+                char char_at = get_char_at(current_x, current_y);
+                if (char_at != ' '){
+                    current_x++;
+                    break;
+                }
+                current_x--;
+            }
+            set_cursor(current_x-1, current_y);
+            return;
+        }
+    }
+    current_x -= 1;
+    terminal_put_char_at(current_x, current_y, ' ');
+    set_cursor(current_x-1, current_y);
+}
+
+void kprint_char(const char c){
+    terminal_write_char(c);
 }

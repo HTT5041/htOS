@@ -37,3 +37,15 @@ void uint32_to_hex(uint32_t num, char buffer[9]) {
 
     buffer[8] = '\0'; // Null-terminate the string
 }
+
+void char_to_hex(char c, char buffer[3]) {
+    const char hex_digits[] = "0123456789abcdef";
+
+    char lower_nibble = hex_digits[c & 0xF];
+    c >>= 4;
+    char upper_nibble = hex_digits[c & 0xF];
+    
+    buffer[0] = upper_nibble;
+    buffer[1] = lower_nibble;
+    buffer[2] = '\0';
+}
