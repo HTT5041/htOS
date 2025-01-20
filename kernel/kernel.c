@@ -10,6 +10,7 @@
 #include <ports.h>
 #include <util.h>
 #include <keyboard.h>
+#include <timer.h>
 
 #include <logging.h>
 
@@ -29,7 +30,11 @@ void kernel_main() {
     enable_interrupts();
     log_message(SUCCESS, "interrupts enabled", true);
 
-    terminal_set_colour(RED, BLACK);
+    log_message(INFO, "Initialising timer...", true);
+    init_timer(1000);
+    log_message(SUCCESS, "Timer initialised", true);
+
+    terminal_set_colour(GREEN, BLACK);
     
     
     kprint("                     __          __       ______    ______  \n");
@@ -46,6 +51,7 @@ void kernel_main() {
     terminal_default_colour();
 
     register_handler(IRQ1, keyboard_handler);
+    register_handler(IRQ0, timer_callback);
 
     while (1){
         asm volatile("hlt");
