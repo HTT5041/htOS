@@ -15,7 +15,10 @@
 #include <string.h>
 #include <abort.h>
 
+#include <mem.h>
+
 #include <logging.h>
+
 
 void kernel_main() {
     init_terminal();
@@ -37,6 +40,10 @@ void kernel_main() {
     init_timer(1000);
     log_message(SUCCESS, "Timer initialised", true);
 
+    log_message(INFO, "Initialising physical memory manager...", true);
+    init_physical_memory();
+    log_message(SUCCESS, "Physical memory initialised", true);
+
     terminal_set_colour(GREEN, BLACK);
     
     
@@ -54,14 +61,10 @@ void kernel_main() {
     terminal_default_colour();
 
     register_handler(IRQ1, keyboard_handler);
-    register_handler(IRQ0, timer_callback);
+    register_handler(IRQ0, timer_irq_callback);
 
-    kprint("$ ");
-    char* input_buf = get_string();
-    
-    if(streq(input_buf, "ping")){
-        kprint("\npong!");
-    }
 
+
+    while(1){}
     abort();
 }

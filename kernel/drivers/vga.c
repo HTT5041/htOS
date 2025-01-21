@@ -1,5 +1,6 @@
 #include <vga.h>
 #include <ports.h>
+#include <mem.h>
 
 #include <util.h>
 
