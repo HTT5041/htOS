@@ -126,6 +126,10 @@ void keyboard_handler(registers_t r){
     //kprint(buf);
 
     if(scancode == SC_BACKSPACE){
+        if(kb_buf_index > 0){
+            kb_buf_index--;
+            kb_buf[kb_buf_index] = 0;
+        }
         terminal_backspace(true);
         return;
     }
