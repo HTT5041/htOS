@@ -6,7 +6,7 @@
 uint64_t count_down = 0;
 
 #define MAX_TIMER_CALLBACKS 128
-timer_callback_entry* callbacks[MAX_TIMER_CALLBACKS];
+timer_callback_entry_t* callbacks[MAX_TIMER_CALLBACKS];
 size_t max_interval = 0;
 size_t current_tick = 0;
 
@@ -38,8 +38,8 @@ void timer_irq_callback(registers_t regs){
             if(callbacks[i]){
                 size_t interval = callbacks[i]->interval;
                 if(current_tick % interval == 0){
-                    timer_callback callback = callbacks[i]->callback;
-                    callback();
+                    timer_callback_t callback = callbacks[i]->callback;
+                    callback(regs);
                 }
             }
         }
@@ -47,9 +47,11 @@ void timer_irq_callback(registers_t regs){
 
     if(count_down == 0) return;
     count_down--;
+
+    //TODO: Call the scheduler down here as it will end the interrupt for us
 }
 
-size_t register_timer_callback(timer_callback_entry *cb){
+size_t register_timer_callback(timer_callback_entry_t *cb){
     if (cb->interval > max_interval){
         max_interval = cb->interval;
     }
