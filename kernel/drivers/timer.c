@@ -2,6 +2,7 @@
 
 #include <vga.h>
 #include <util.h>
+#include <scheduling.h>
 
 uint64_t count_down = 0;
 
@@ -27,6 +28,7 @@ void init_timer(uint16_t freq){
 
 void timer_irq_callback(registers_t regs){
     current_tick++;
+    /*
 
     if(current_tick > max_interval){
         current_tick = 0;
@@ -44,11 +46,11 @@ void timer_irq_callback(registers_t regs){
             }
         }
     }
+    */
 
-    if(count_down == 0) return;
-    count_down--;
-
-    //TODO: Call the scheduler down here as it will end the interrupt for us
+    if(count_down > 0){
+        count_down--;
+    }
 }
 
 size_t register_timer_callback(timer_callback_entry_t *cb){

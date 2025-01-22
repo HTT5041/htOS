@@ -52,8 +52,8 @@ void init_physical_memory(){
         memory_bitmap[i] = 0;
     }
 
-    // Reserve the first 2MB for the kernel
-    last_kernel_reserved_frame = 0x200000 / FRAME_SIZE;
+    // Reserve the first 4MB for the kernel
+    last_kernel_reserved_frame = 0x400000 / FRAME_SIZE;
     for(size_t i = 0; i < last_kernel_reserved_frame; i++){
         set_frame_occupied(i);
     }

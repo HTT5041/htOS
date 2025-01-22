@@ -2,12 +2,15 @@
 #define SCHEDULING_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <isr.h>
+#include <mem.h>
+#include <vga.h>
+#include <util.h>
+#include <timer.h>
 
-typedef void (*task_entry_t)(void);
+void yield();
 
 void init_scheduler();
-
-void add_task(task_entry_t task);
 
 #endif

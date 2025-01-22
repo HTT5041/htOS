@@ -1,7 +1,6 @@
 .extern isr_handler
 .extern irq_handler
 
-.extern debug_print
 isr_common_stub:
     pusha           # Pushes edi, esi, ebp, esp, ebx, edx, ecx, eax
     movw %ds, %ax   # Move the value of the DS segment register into AX (16-bit)

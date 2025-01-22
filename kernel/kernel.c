@@ -18,6 +18,7 @@
 #include <mem.h>
 
 #include <logging.h>
+#include <scheduling.h>
 
 
 void kernel_main() {
@@ -63,6 +64,7 @@ void kernel_main() {
     register_handler(IRQ1, keyboard_handler);
     register_handler(IRQ0, timer_irq_callback);
 
+    init_scheduler();
 
 
     while(1){}
