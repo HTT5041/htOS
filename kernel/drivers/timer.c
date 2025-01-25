@@ -67,6 +67,7 @@ size_t register_timer_callback(timer_callback_entry_t *cb){
 void deregister_timer_callback(size_t index){
     if(index > MAX_TIMER_CALLBACKS) return;
 
+    kfree((void*) callbacks[index]);
     callbacks[index] = 0;
 }
 
