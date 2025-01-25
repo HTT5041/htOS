@@ -54,6 +54,7 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15();
+extern void volentary_yield_irq();
 
 #define IRQ0 32
 #define IRQ1 33

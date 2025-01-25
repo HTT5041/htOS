@@ -22,3 +22,11 @@ bool streq(const char* a, const char* b){
     // Ensure both strings reached the null terminator
     return *a == '\0' && *b == '\0';
 }
+
+size_t strlen(const char* str){
+    size_t size = 0;
+    while (str[size]){
+        size++;
+    }
+    return size;
+}

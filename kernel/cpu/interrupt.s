@@ -99,6 +99,7 @@ irq_common_stub:
 .global irq13
 .global irq14
 .global irq15
+.global scheduler_irq
 
 isr0: # Division by Zero
     cli 
@@ -286,11 +287,24 @@ isr31: # Reserved
     jmp isr_common_stub
 
 # IRQ handlers
+.extern timer_irq_callback
+.extern scheduler
+.global volentary_yield_irq
 irq0:
     cli 
-    pushl $0
-    pushl $32
-    jmp irq_common_stub
+
+    call timer_irq_callback
+
+    call scheduler
+
+    sti
+    iret
+
+volentary_yield_irq:
+    cli
+    call scheduler
+    sti
+    iret
 
 irq1:
     cli 

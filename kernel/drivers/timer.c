@@ -26,9 +26,10 @@ void init_timer(uint16_t freq){
     asm volatile("sti");
 }
 
-void timer_irq_callback(registers_t regs){
+void timer_irq_callback(){
+    b_out(0x20, 0x20);
     current_tick++;
-    /*
+    
 
     if(current_tick > max_interval){
         current_tick = 0;
@@ -41,15 +42,11 @@ void timer_irq_callback(registers_t regs){
                 size_t interval = callbacks[i]->interval;
                 if(current_tick % interval == 0){
                     timer_callback_t callback = callbacks[i]->callback;
-                    callback(regs);
+                    callback(callbacks[i]->id);
+                    deregister_timer_callback(i);
                 }
             }
         }
-    }
-    */
-
-    if(count_down > 0){
-        count_down--;
     }
 }
 
@@ -74,8 +71,16 @@ void deregister_timer_callback(size_t index){
 }
 
 void sleep(int millis){
-    count_down = millis;
-    while (count_down != 0){
-        asm volatile("hlt");
-    }
+    spinlock_acquire(&global_lock);
+    task_t* ct = get_current_task();
+    ct->sleeping = true;
+
+    timer_callback_entry_t *tcb = kalloc();
+    tcb->callback = task_timer_callback;
+    tcb->interval = millis;
+    tcb->id = ct->pid;
+
+    register_timer_callback(tcb);
+    spinlock_release(&global_lock);
+    yield(true);
 }

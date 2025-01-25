@@ -1,13 +1,5 @@
 #include <util.h>
 
-size_t strlen(const char* str){
-    size_t size = 0;
-    while (str[size]){
-        size++;
-    }
-    return size;
-}
-
 void uint64_to_hex(uint64_t num, char buffer[17]) {
     const char hex_digits[] = "0123456789abcdef";
 

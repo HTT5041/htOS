@@ -18,8 +18,11 @@
 #include <mem.h>
 
 #include <logging.h>
-#include <scheduling.h>
 
+#include <scheduling.h>
+#include <task.h>
+
+void kernel_process();
 
 void kernel_main() {
     init_terminal();
@@ -45,8 +48,43 @@ void kernel_main() {
     init_physical_memory();
     log_message(SUCCESS, "Physical memory initialised", true);
 
+    register_handler(IRQ1, keyboard_handler);
+
+    init_kernel_task(kernel_process);
+
+    // Should never reach here
+    abort();
+}
+
+int uint64_mod(uint64_t a, uint64_t b){
+    while(a >= b){
+        a -= b;
+    }
+    return a;
+}
+
+void numbers(){
+    uint64_t i = 0xfffff;
+    while(1){
+        i++;
+        if(uint64_mod(i, 1000000) == 0){
+            spinlock_acquire(&print_lock);
+            kprint("\nNumbers: ");
+            char buffer[17];
+            uint64_to_hex(i, buffer);
+            kprint(buffer);
+            kprint("\n");
+            spinlock_release(&print_lock);
+            break;
+        }
+    }
+    kill_task();
+}
+
+void shell() {
+    terminal_clear();
+
     terminal_set_colour(GREEN, BLACK);
-    
     
     kprint("                     __          __       ______    ______  \n");
     kprint("                    /  |        /  |     /      \\  /      \\ \n");
@@ -61,12 +99,21 @@ void kernel_main() {
 
     terminal_default_colour();
 
-    register_handler(IRQ1, keyboard_handler);
-    register_handler(IRQ0, timer_irq_callback);
+    kprint("\n\n\n> ");
+    while(1) {
+        kprint("hi");
+        sleep(1000);
+    }
+}
 
-    init_scheduler();
+void kernel_process(){
+    // Create shell process
+    task_t* shell_task = create_task("shell", get_next_pid(), shell);
+    add_task(shell_task);
 
 
-    while(1){}
-    abort();
+    while(1) {
+        // Kernel loop 
+        kclean_scheduler();
+    }
 }

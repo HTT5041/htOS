@@ -143,6 +143,7 @@ void isr_install() {
     set_idt_gate(45, (uint32_t)irq13);
     set_idt_gate(46, (uint32_t)irq14);
     set_idt_gate(47, (uint32_t)irq15);
+    set_idt_gate(0x81, (uint32_t)volentary_yield_irq);
     
     set_idt();
 }

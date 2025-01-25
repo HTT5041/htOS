@@ -1,5 +1,8 @@
 #include <mem.h>
 
+#include <util.h>
+#include <vga.h>
+
 #define FRAME_SIZE 0x1000 // 4 KiB
 #define BITMAP_SIZE 32768 // Example for managing 128 MiB of RAM
 
@@ -32,7 +35,8 @@ void* kalloc(){
         return NULL; // No available memory
     }
     set_frame_occupied(free_frame);
-    return (void*) (free_frame * FRAME_SIZE);
+    void* address = (void*) (free_frame * FRAME_SIZE);
+    return address;
 }
 
 void kfree(void* frame){
