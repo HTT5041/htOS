@@ -56,31 +56,6 @@ void kernel_main() {
     abort();
 }
 
-int uint64_mod(uint64_t a, uint64_t b){
-    while(a >= b){
-        a -= b;
-    }
-    return a;
-}
-
-void numbers(){
-    uint64_t i = 0xfffff;
-    while(1){
-        i++;
-        if(uint64_mod(i, 1000000) == 0){
-            spinlock_acquire(&print_lock);
-            kprint("\nNumbers: ");
-            char buffer[17];
-            uint64_to_hex(i, buffer);
-            kprint(buffer);
-            kprint("\n");
-            spinlock_release(&print_lock);
-            break;
-        }
-    }
-    kill_task();
-}
-
 void shell() {
     terminal_clear();
 
@@ -98,6 +73,9 @@ void shell() {
     
 
     terminal_default_colour();
+
+    kprint("CPU Model: ");
+    kprint(get_cpu_name());
 
     kprint("\n\n\n> ");
     while(1) {
